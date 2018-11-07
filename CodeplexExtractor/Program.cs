@@ -135,12 +135,12 @@ namespace CodeplexExtractor
                 return !Nix;
             }
         }
-        public static void ExtractNix(string filename)
+        public static void ExtractNix(string exec="/usr/bin/unzip",string filename)
         {
             Process p = new Process();
             ProcessStartInfo psi = new ProcessStartInfo();
             p.StartInfo = psi;
-            psi.FileName = "/usr/bin/unzip";
+            psi.FileName = exec;
             psi.Arguments = String.Format("-o {0} -d "+unpackDir,filename);
             psi.WorkingDirectory = Environment.CurrentDirectory;
             p.Start();
@@ -149,7 +149,14 @@ namespace CodeplexExtractor
         }
         public static void ExtractWin(string filename)
         {
-            System.IO.Compression.ZipFile.ExtractToDirectory(filename,unpackDir);
+            if (File.Exists("unzip.exe"))
+            {
+                ExtractNix("unzip.exe", filename);
+            }
+            else
+            {
+                System.IO.Compression.ZipFile.ExtractToDirectory(filename, unpackDir);
+            }
         }
     }
 }
